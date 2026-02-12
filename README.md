@@ -80,41 +80,6 @@
 | **sortable()** | Włącza drag & drop na liście |
 | **disableSelection()** | Wyłącza zaznaczanie tekstu |
 
-## 🚀 Jak uruchomić projekt
-
-### Wymagania
-- Przeglądarka internetowa (Chrome, Firefox, Safari, Edge)
-- Serwer HTTP (np. Live Server w VS Code)
-
-### Instalacja i uruchomienie
-
-1. **Klonowanie repozytorium**
-```bash
-git clone https://github.com/[username]/lista-zakupow.git
-cd lista-zakupow
-```
-
-2. **Otwarcie w VS Code**
-```bash
-code .
-```
-
-3. **Uruchomienie Live Server**
-   - Zainstaluj rozszerzenie `Live Server`
-   - Kliknij prawym przyciskiem na `index.html`
-   - Wybierz "Open with Live Server"
-
-### Alternatywnie - Python
-```bash
-# Python 3
-python -m http.server 8000
-
-# Python 2
-python -m SimpleHTTPServer 8000
-```
-
-Następnie otwórz http://localhost:8000 w przeglądarce.
-
 ## 📂 Struktura projektu
 
 ```
