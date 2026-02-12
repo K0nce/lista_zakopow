@@ -130,7 +130,7 @@ $('p').html('<b>Bold</b>');  // Wyświetli: Bold (pogrubione)
 
 - **HTML5** - Struktura strony
 - **CSS3** - Styling (Bootstrap 5 + Custom CSS)
-- **JavaScript (ES6+)** - Logika aplikacji
+- **JavaScript** - Logika aplikacji (**W3Schools style**: var, ==, alert(), prosty kod edukacyjny)
 - **jQuery 3.6.0** - Manipulacja DOM
 - **jQuery UI 1.14.0** - Drag & Drop (sortable)
 - **Bootstrap 5.3** - Framework CSS
@@ -147,72 +147,48 @@ $('p').html('<b>Bold</b>');  // Wyświetli: Bold (pogrubione)
 
 ## 💡 Przykłady kodu
 
-### Dodanie elementu
+### 1. Dodanie elementu (append)
 ```javascript
-function addProduct() {
-    const productName = $('#productInput').val().trim();
-    const $newItem = $('<li></li>')
-        .addClass('list-group-item')
-        .text(productName);
+$("#addProductBtn").click(function() {
+    var productName = $("#productInput").val();
     
-    $('#shoppingList').append($newItem);  // jQuery append()
-}
-```
-
-### Edycja elementu
-```javascript
-function editItem($item) {
-    const currentText = $item.text();  // jQuery text()
-    $item.html(`<input type="text" value="${currentText}">`);  // jQuery html()
-}
-```
-
-### Sortowanie
-```javascript
-function sortAlphabetically() {
-    const items = $('#shoppingList').find('li')  // jQuery find()
-        .get()                                      // konwersja na tablicę
-        .sort((a, b) => $(a).text().localeCompare($(b).text()));
+    if (productName == "") {
+        alert("Proszę wpisać nazwę produktu!");
+        return;
+    }
     
-    $('#shoppingList').empty();                    // jQuery empty()
-    items.forEach(item => $('#shoppingList').append(item));
-}
+    // append() - dodaje nowy element na KONIEC listy
+    $("#shoppingList").append("<li class='list-group-item'>" + productName + "</li>");
+    
+    $("#productInput").val("");
+});
 ```
 
-## 🐛 Debugging
+### 2. Edycja elementu (html + text)
+```javascript
+$(document).on("dblclick", "#shoppingList li", function() {
+    var currentText = $(this).text();  // text() - pobiera tekst
+    
+    // html() - wstawia HTML (input jest HTML)
+    $(this).html('<input type="text" value="' + currentText + '">');
+    $(this).find("input").focus();
+});
+```
 
-Aby włączyć tryb debug, otórz DevTools (F12) i zapoznaj się z konsolą JavaScript.
-
-## 📝 Licencja
-
-MIT License - Wolne do użytku w projektach edukacyjnych i komercyjnych.
-
-## 👨‍💻 Autor
-
-Lista zakupów - Projekt edukacyjny jQuery DOM Manipulation
-
-## 🤝 Wkład
-
-Jeśli chciałbyś dodać nowe funkcje lub naprawić błędy, stwórz pull request!
-
-## ❓ FAQ
-
-**P: Jak mogę dodać własne produkty?**  
-O: Po prostu wpisz nazwę w input i kliknij "Dodaj produkt" lub wciśnij Enter.
-
-**P: Czy mogę edytować elementy?**  
-O: Tak! Kliknij dwukrotnie na element, umotaj tekst w input polu, potem wciśnij Enter.
-
-**P: Jak włączyć drag & drop?**  
-O: Drag & drop jest automatycznie włączony. Po prostu przeciąg element do nowej pozycji.
-
-**P: Czy dane są zapisywane?**  
-O: Nie, ta wersja przechowuje dane tylko w pamięci. Aby dodać localStorage, zapoznaj się z dokumentacją jQuery.
-
-## 📞 Kontakt
-
-Email: kontakt@example.com
-
----
-
-**Stwórz swoją grę zakupów! 🛒**
+### 3. Sortowanie (get + sort)
+```javascript
+$("#sortAlphaBtn").click(function() {
+    // get() - konwertuje jQuery obiekt na tablicę JavaScript
+    var items = $("#shoppingList li").get();
+    
+    items.sort(function(a, b) {
+        var textA = $(a).text().toUpperCase();
+        var textB = $(b).text().toUpperCase();
+        return textA.localeCompare(textB, "pl");
+    });
+    
+    // Wstaw posortowane elementy
+    $("#shoppingList").html(items);
+    alert("Lista posortowana A-Z!");
+});
+```
