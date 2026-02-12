@@ -1,431 +1,419 @@
-/**
- * Lista Zakupów - jQuery DOM Manipulation
- * Demonstracja zaawansowanych metod jQuery do manipulacji DOM
- */
+// ========================================
+// Lista Zakupów - jQuery DOM Manipulation
+// Inspiracja: W3Schools jQuery Tutorial
+// ========================================
 
 $(document).ready(function() {
-    // ==================== Zmienne globalne ====================
-    const $shoppingList = $('#shoppingList');
-    const $productInput = $('#productInput');
-    const $prependInput = $('#productInputPrepend');
-    const $appendInput = $('#productInputAppend');
-    const $filterInput = $('#filterInput');
-    const itemCountSelector = '#itemCount';
-
-    // Domyślna lista do przywrócenia
-    const defaultItems = ['Mleko', 'Chleb', 'Masło', 'Ser', 'Jajka'];
-
-    // ==================== Inicjalizacja ====================
-    initializeApp();
-
-    function initializeApp() {
-        // Włącz sortowanie drag & drop
-        enableDragDrop();
-        
-        // Dodaj event listenery
-        attachEventListeners();
-        
-        // Uaktualnij licznik
-        updateItemCount();
-    }
-
-    // ==================== Event Listenery ====================
-    function attachEventListeners() {
-        // Sekcja 1: Podstawowe operacje
-        $('#addProductBtn').on('click', addProduct);
-        $productInput.on('keypress', function(e) {
-            if (e.which === 13) addProduct();
-        });
-        
-        $('#removeLastBtn').on('click', removeLastProduct);
-        $('#clearListBtn').on('click', clearList);
-        $('#restoreListBtn').on('click', restoreList);
-
-        // Sekcja 2: Manipulacja treścią
-        $('#addBeginningBtn').on('click', addAtBeginning);
-        $prependInput.on('keypress', function(e) {
-            if (e.which === 13) addAtBeginning();
-        });
-        
-        $('#addEndBtn').on('click', addAtEnd);
-        $appendInput.on('keypress', function(e) {
-            if (e.which === 13) addAtEnd();
-        });
-
-        // Sekcja 3: Atrybuty i klasy
-        $('#colorEverySecondBtn').on('click', colorEverySecond);
-        $('#resetColorsBtn').on('click', resetColors);
-
-        // Sekcja 4: Zaawansowane
-        $('#sortAlphaBtn').on('click', sortAlphabetically);
-        $('#sortReverseBtn').on('click', sortReverse);
-        $('#resetFilterBtn').on('click', resetFilter);
-        
-        $filterInput.on('keyup', function() {
-            filterList($(this).val());
-        });
-
-        // Dynamiczne zdarzenia na liście
-        $(document).on('click', '#shoppingList li', function(e) {
-            if (e.target.tagName === 'INPUT') return;
-            
-            // Jeśli element jest już w edycji, zapisz
-            if ($(this).hasClass('editing')) {
-                saveEdit($(this));
-            } else {
-                // Przełącz klasę active
-                $(this).toggleClass('active').siblings('li').removeClass('active');
-            }
-        });
-
-        $(document).on('dblclick', '#shoppingList li:not(.editing)', function(e) {
-            if (e.target.tagName === 'INPUT') return;
-            editItem($(this));
-        });
-
-        $(document).on('keypress', '#shoppingList li input', function(e) {
-            if (e.which === 13) {
-                saveEdit($(this).closest('li'));
-            }
-        });
-
-        $(document).on('blur', '#shoppingList li input', function() {
-            saveEdit($(this).closest('li'));
-        });
-    }
-
-    // ==================== Funkcje - Sekcja 1: Podstawowe ====================
     
-    /**
-     * append() - Dodaje element na koniec listy
-     * text() - Ustawia tekstową treść elementu
-     * addClass() - Dodaje klasę CSS do elementu
-     */
-    function addProduct() {
-        const productName = $productInput.val().trim();
+    // =============== SEKCJA 1: PODSTAWOWE OPERACJE ===============
+    
+    // === METODA 1: append() - Dodaj produkt na koniec listy ===
+    $("#addProductBtn").click(function() {
+        var productName = $("#productInput").val();
         
-        if (productName === '') {
-            alert('Proszę wpisać nazwę produktu!');
+        if (productName == "") {
+            alert("Proszę wpisać nazwę produktu!");
             return;
         }
-
-        const $newItem = $('<li></li>')
-            .addClass('list-group-item')
-            .text(productName)
-            .addClass('fade-in');
-
-        $shoppingList.append($newItem);
         
-        // Animacja pulse
-        $newItem.addClass('pulse-item');
-        setTimeout(() => $newItem.removeClass('pulse-item'), 600);
-
-        $productInput.val('').focus();
-        updateItemCount();
-    }
-
-    /**
-     * :last - Selektor jQuery dla ostatniego elementu
-     * remove() - Usuwa element z DOM
-     */
-    function removeLastProduct() {
-        const $lastItem = $shoppingList.find('li:last');
+        // append() - dodaje nowy element na KONIEC listy
+        $("#shoppingList").append("<li class='list-group-item'>" + productName + "</li>");
         
-        if ($lastItem.length === 0) {
-            alert('Lista jest pusta!');
+        // Czyść input
+        $("#productInput").val("");
+        
+        // Odśwież licznik
+        updateCount();
+    });
+    
+    // Enter w input field
+    $("#productInput").keypress(function(e) {
+        if (e.which == 13) {
+            $("#addProductBtn").click();
+        }
+    });
+    
+    
+    // === METODA 2: remove() - Usuń ostatni element ===
+    $("#removeLastBtn").click(function() {
+        var lastItem = $("#shoppingList li:last");
+        
+        if (lastItem.length == 0) {
+            alert("Lista jest pusta!");
             return;
         }
-
-        $lastItem.addClass('fade-out');
-        setTimeout(() => {
-            $lastItem.remove();
-            updateItemCount();
-        }, 400);
-    }
-
-    /**
-     * empty() - Usuwa całą zawartość elementu (te WSZYSTKIE elementy)
-     * Różnica: empty() usuwa zawartość, remove() usuwa sam element
-     */
-    function clearList() {
-        if ($shoppingList.find('li').length === 0) {
-            alert('Lista jest już pusta!');
-            return;
-        }
-
-        if (confirm('Czy na pewno chcesz wyczyścić listę?')) {
-            $shoppingList.find('li').addClass('fade-out');
-            setTimeout(() => {
-                $shoppingList.empty();
-                updateItemCount();
-            }, 400);
-        }
-    }
-
-    /**
-     * html() - Wstawia HTML zawartość (mogą być tagi)
-     * find() - Szuka elementów wewnątrz wybranego elementu
-     */
-    function restoreList() {
-        $shoppingList.empty();
         
-        defaultItems.forEach((item, index) => {
-            setTimeout(() => {
-                const $item = $('<li></li>')
-                    .addClass('list-group-item fade-in')
-                    .text(item);
-                $shoppingList.append($item);
-            }, index * 150);
+        // :last - selektor jQuery dla ostatniego elementu
+        // remove() - usuwa element z DOM
+        lastItem.fadeOut(400, function() {
+            $(this).remove();
+            updateCount();
         });
-
-        setTimeout(() => {
-            updateItemCount();
-            enableDragDrop();
-        }, defaultItems.length * 150);
-    }
-
-    // ==================== Funkcje - Sekcja 2: Manipulacja treścią ====================
+    });
     
-    /**
-     * prepend() - Dodaje element na POCZĄTEK
-     * append() - Dodaje element na KONIEC
-     * Różnica: prepend() umieszcza jako pierwszy dziecko, append() jako ostatnie
-     */
-    function addAtBeginning() {
-        const productName = $prependInput.val().trim();
+    
+    // === METODA 3: empty() - Wyczyść całą listę ===
+    $("#clearListBtn").click(function() {
+        var itemCount = $("#shoppingList li").length;
         
-        if (productName === '') {
-            alert('Proszę wpisać nazwę produktu!');
+        if (itemCount == 0) {
+            alert("Lista jest już pusta!");
             return;
         }
-
-        const $newItem = $('<li></li>')
-            .addClass('list-group-item fade-in')
-            .text(productName);
-
-        $shoppingList.prepend($newItem);
         
-        $newItem.addClass('pulse-item');
-        setTimeout(() => $newItem.removeClass('pulse-item'), 600);
-
-        $prependInput.val('').focus();
-        updateItemCount();
-    }
-
-    function addAtEnd() {
-        const productName = $appendInput.val().trim();
-        
-        if (productName === '') {
-            alert('Proszę wpisać nazwę produktu!');
-            return;
-        }
-
-        const $newItem = $('<li></li>')
-            .addClass('list-group-item fade-in')
-            .text(productName);
-
-        $shoppingList.append($newItem);
-        
-        $newItem.addClass('pulse-item');
-        setTimeout(() => $newItem.removeClass('pulse-item'), 600);
-
-        $appendInput.val('').focus();
-        updateItemCount();
-    }
-
-    // ==================== Funkcje - Sekcja 3: Atrybuty i klasy ====================
-    
-    /**
-     * :even - Selektor jQuery dla elementów z parzystymi indeksami (0-based)
-     * css() - Zmienia style CSS elementu
-     * addClass() - Dodaje klasę CSS
-     */
-    function colorEverySecond() {
-        $shoppingList.find('li').each(function(index) {
-            if (index % 2 === 1) { // co drugi element (indeks 1, 3, 5...)
-                $(this).addClass('colored-even');
-            }
-        });
-    }
-
-    function resetColors() {
-        $shoppingList.find('li').removeClass('colored-even active');
-    }
-
-    // ==================== Funkcje - Sekcja 4: Zaawansowane ====================
-    
-    /**
-     * Sortowanie alfabetyczne A-Z
-     * get() - Zmienia jQuery obiekt na zwykłą tablicę
-     * sort() - Sortuje tablicę
-     * each() - Iteruje po każdym elemencie
-     */
-    function sortAlphabetically() {
-        const items = $shoppingList.find('li')
-            .get()
-            .sort((a, b) => {
-                return $(a).text().localeCompare($(b).text(), 'pl');
+        if (confirm("Czy na pewno chcesz wyczyścić listę?")) {
+            // empty() - usuwa ZAWARTOŚĆ, ale DIV pozostaje
+            $("#shoppingList").fadeOut(400, function() {
+                $(this).empty().fadeIn();
+                updateCount();
             });
-
-        $shoppingList.empty();
+        }
+    });
+    
+    
+    // === METODA 4: html() - Przywróć listę domyślnymi elementami ===
+    $("#restoreListBtn").click(function() {
+        // Przykładowe elementy
+        var items = '<li class="list-group-item">Mleko</li>' +
+                    '<li class="list-group-item">Chleb</li>' +
+                    '<li class="list-group-item">Masło</li>' +
+                    '<li class="list-group-item">Jajka</li>' +
+                    '<li class="list-group-item">Ser</li>';
         
-        items.forEach((item, index) => {
-            setTimeout(() => {
-                $shoppingList.append($(item).addClass('fade-in'));
-            }, index * 100);
-        });
-
-        setTimeout(() => enableDragDrop(), items.length * 100);
-    }
-
-    /**
-     * Sortowanie odwrotne Z-A
-     */
-    function sortReverse() {
-        const items = $shoppingList.find('li')
-            .get()
-            .sort((a, b) => {
-                return $(b).text().localeCompare($(a).text(), 'pl');
-            });
-
-        $shoppingList.empty();
+        // html() - ustawia zawartość HTML
+        $("#shoppingList").html(items);
         
-        items.forEach((item, index) => {
-            setTimeout(() => {
-                $shoppingList.append($(item).addClass('fade-in'));
-            }, index * 100);
-        });
-
-        setTimeout(() => enableDragDrop(), items.length * 100);
+        updateCount();
+        alert("Lista została przywrócona!");
+    });
+    
+    
+    // =============== SEKCJA 2: MANIPULACJA TREŚCIĄ ===============
+    
+    // === METODA 5: prepend() - Dodaj na POCZĄTKU listy ===
+    $("#addBeginningBtn").click(function() {
+        var productName = $("#productInputPrepend").val();
+        
+        if (productName == "") {
+            alert("Proszę wpisać nazwę produktu!");
+            return;
+        }
+        
+        // prepend() - dodaje nowy element na POCZĄTEK listy
+        // Różnica od append(): prepend() = START, append() = KONIEC
+        $("#shoppingList").prepend("<li class='list-group-item'>" + productName + "</li>");
+        
+        $("#productInputPrepend").val("");
+        updateCount();
+    });
+    
+    $("#productInputPrepend").keypress(function(e) {
+        if (e.which == 13) {
+            $("#addBeginningBtn").click();
+        }
+    });
+    
+    
+    // === METODA 6: append() - Dodaj na KOŃCU listy ===
+    $("#addEndBtn").click(function() {
+        var productName = $("#productInputAppend").val();
+        
+        if (productName == "") {
+            alert("Proszę wpisać nazwę produktu!");
+            return;
+        }
+        
+        // append() - dodaje nowy element na KONIEC listy
+        $("#shoppingList").append("<li class='list-group-item'>" + productName + "</li>");
+        
+        $("#productInputAppend").val("");
+        updateCount();
+    });
+    
+    $("#productInputAppend").keypress(function(e) {
+        if (e.which == 13) {
+            $("#addEndBtn").click();
+        }
+    });
+    
+    
+    // =============== SEKCJA 3: ATRYBUTY I KLASY ===============
+    
+    // === METODA 7: addClass() - Dodaj klasę CSS ===
+    $("#colorEverySecondBtn").click(function() {
+        // :even - selektor dla elementów parzystych (indeksy 0, 2, 4...)
+        $("#shoppingList li:even").addClass("colored-even");
+        
+        alert("Pokolorowano co drugi element!");
+    });
+    
+    
+    // === METODA 8: removeClass() - Usuń klasę CSS ===
+    $("#resetColorsBtn").click(function() {
+        // removeClass() - usuwa określoną klasę
+        $("#shoppingList li").removeClass("colored-even active");
+        
+        alert("Kolory zostały zresetowane!");
+    });
+    
+    
+    // === Klikanie na element - toggleClass() ===
+    $(document).on("click", "#shoppingList li", function() {
+        // toggleClass() - dodaje klasę jeśli jej nie ma, usuwa jeśli ma
+        $(this).toggleClass("active");
+        
+        // Opcjonalnie: pokaż tekst elementu w alert
+        var text = $(this).text();
+        console.log("Wybrałeś: " + text);
+    });
+    
+    
+    // === Edycja inline - Podwójne kliknięcie ===
+    $(document).on("dblclick", "#shoppingList li:not(.editing)", function() {
+        var currentText = $(this).text();
+        
+        $(this).addClass("editing");
+        
+        // Zamień tekst na input
+        $(this).html('<input type="text" class="edit-input" value="' + currentText + '">');
+        
+        $(this).find("input").focus().select();
+    });
+    
+    
+    // === Zatwierdzenie edycji - Enter ===
+    $(document).on("keypress", "#shoppingList li input", function(e) {
+        if (e.which == 13) {
+            saveItemEdit($(this));
+        }
+    });
+    
+    
+    // === Zatwierdzenie edycji - Utrata fokusa ===
+    $(document).on("blur", "#shoppingList li input", function() {
+        saveItemEdit($(this));
+    });
+    
+    
+    // Funkcja pomocnicza do zapisania edycji
+    function saveItemEdit(inputElement) {
+        var newText = inputElement.val();
+        var listItem = inputElement.closest("li");
+        
+        if (newText == "") {
+            newText = "(puste)";
+        }
+        
+        // text() - ustawia tekstową zawartość (BEZ HTML)
+        listItem.text(newText);
+        listItem.removeClass("editing");
     }
-
-    /**
-     * Filtrowanie listy
-     * filter() - Filtruje elementy na podstawie warunku
-     * indexOf() - Sprawdza czy ciąg znajduje się w tekście
-     * show()/hide() - Pokazuje/ukrywa elementy
-     */
-    function filterList(searchTerm) {
-        $shoppingList.find('li').each(function() {
-            const itemText = $(this).text().toLowerCase();
-            const searchText = searchTerm.toLowerCase();
+    
+    
+    // =============== SEKCJA 4: ZAAWANSOWANE OPERACJE ===============
+    
+    // === METODA 9: Sortuj alfabetycznie A-Z ===
+    $("#sortAlphaBtn").click(function() {
+        // get() - konwertuje jQuery obiekt na tablicę JavaScript
+        var items = $("#shoppingList li").get();
+        
+        // sort() - sortuje tablicę
+        items.sort(function(a, b) {
+            var textA = $(a).text().toUpperCase();
+            var textB = $(b).text().toUpperCase();
             
-            if (itemText.indexOf(searchText) === -1 && searchTerm !== '') {
-                $(this).hide(200);
-            } else {
+            return textA.localeCompare(textB, "pl");
+        });
+        
+        // Wstaw posortowane elementy
+        $("#shoppingList").html(items);
+        
+        alert("Lista posortowana A-Z!");
+    });
+    
+    
+    // === METODA 10: Sortuj alfabetycznie Z-A ===
+    $("#sortReverseBtn").click(function() {
+        var items = $("#shoppingList li").get();
+        
+        items.sort(function(a, b) {
+            var textA = $(a).text().toUpperCase();
+            var textB = $(b).text().toUpperCase();
+            
+            // Odwrotny porządek
+            return textB.localeCompare(textA, "pl");
+        });
+        
+        $("#shoppingList").html(items);
+        
+        alert("Lista posortowana Z-A!");
+    });
+    
+    
+    // === METODA 11: Filtruj listę ===
+    $("#filterInput").keyup(function() {
+        var filterText = $(this).val().toUpperCase();
+        
+        // each() - iteruje po każdym elemencie
+        $("#shoppingList li").each(function() {
+            // text() - pobiera tekstową zawartość
+            var itemText = $(this).text().toUpperCase();
+            
+            if (itemText.indexOf(filterText) > -1) {
+                // show() - pokazuje element
                 $(this).show(200);
+            } else {
+                // hide() - ukrywa element
+                $(this).hide(200);
             }
         });
-    }
-
-    function resetFilter() {
-        $filterInput.val('');
-        $shoppingList.find('li').show(200);
-    }
-
-    // ==================== Funkcje - Dynamiczna edycja ====================
+    });
     
-    /**
-     * text() - Pobiera tekstową treść elementu
-     * html() - Wstawia HTML zawartość
-     */
-    function editItem($item) {
-        const currentText = $item.text();
-        
-        $item.addClass('editing');
-        $item.html(`<input type="text" value="${currentText}" autofocus>`);
-        
-        $item.find('input').focus().select();
-    }
-
-    function saveEdit($item) {
-        const $input = $item.find('input');
-        const newText = $input.val().trim();
-
-        if (newText === '') {
-            $item.removeClass('editing');
-            $item.text('(puste)').css('color', '#999');
-            return;
-        }
-
-        $item.removeClass('editing');
-        $item.text(newText);
-    }
-
-    // ==================== Drag & Drop ====================
     
-    /**
-     * sortable() - Metoda z jQuery UI do drag & drop
-     */
+    // === METODA 12: Resetuj filtr ===
+    $("#resetFilterBtn").click(function() {
+        $("#filterInput").val("");
+        $("#shoppingList li").show();
+    });
+    
+    
+    // =============== DRAG & DROP (jQuery UI) ===============
+    
     function enableDragDrop() {
-        $shoppingList.sortable({
-            items: 'li',
-            cursor: 'move',
+        $("#shoppingList").sortable({
+            items: "li",
+            cursor: "move",
             opacity: 0.7,
-            placeholder: 'ui-sortable-placeholder',
-            update: function(event, ui) {
-                // Opcjonalnie: dodaj animację
-                ui.item.addClass('pulse-item');
-                setTimeout(() => ui.item.removeClass('pulse-item'), 600);
-            }
+            placeholder: "ui-sortable-placeholder"
         });
-
-        $shoppingList.disableSelection();
+        
+        $("#shoppingList").disableSelection();
     }
-
-    // ==================== Helper funkcje ====================
     
-    /**
-     * Aktualizuje licznik elementów
-     */
-    function updateItemCount() {
-        const count = $shoppingList.find('li:visible').length;
-        $(itemCountSelector).text(count);
+    enableDragDrop();
+    
+    
+    // =============== HELPER FUNKCJE ===============
+    
+    // Aktualizuj licznik elementów
+    function updateCount() {
+        var count = $("#shoppingList li:visible").length;
+        $("#itemCount").text(count);
     }
-
-    // Aktualizuj licznik przy filtrowaniu
-    $(document).on('change', '#shoppingList', updateItemCount);
+    
+    // Initial count
+    updateCount();
 });
 
-// ==================== NOTATKA: Różnice między metodami ====================
 
-/**
- * 📚 RÓŻNICE MIĘDZY METODAMI jQuery:
- * 
- * 1. append() a prepend()
- *    - append():   dodaje element na KONIEC (jako ostatnie dziecko)
- *    - prepend():  dodaje element na POCZĄTEK (jako pierwsze dziecko)
- *    
- *    Przykład:
- *    <ul>
- *        <li>prepend dodany tutaj</li>  // prepend()
- *        <li>Element 1</li>
- *        <li>append dodany tutaj</li>   // append()
- *    </ul>
- * 
- * 2. remove() a empty()
- *    - remove():  usuwa CAŁY element z DOM (razem z elementem rodzica)
- *    - empty():   usuwa ZAWARTOŚĆ elementu, ale sam element pozostaje
- *    
- *    $('li').remove();  // Usuwa element <li>
- *    $('ul').empty();   // Usuwa zawartość <ul>, ale <ul> pozostaje
- * 
- * 3. text() a html()
- *    - text():   pobiera/ustawia TYLKO tekst (bez tagów HTML)
- *    - html():   pobiera/ustawia tekst z TAGAMI HTML
- *    
- *    Przykład:
- *    elem.html('<strong>Bold</strong>');  // Tworzy element <strong>
- *    elem.text('<strong>Bold</strong>');  // Wyświetla dosłownie: "<strong>Bold</strong>"
- * 
- * Użyte metody w aplikacji:
- * - addClass(), removeClass(), toggleClass() - Zarządzanie klasami CSS
- * - on() - Dodawanie event listenerów
- * - find() - Wyszukiwanie elementów wewnątrz
- * - each() - Iteracja po każdym elemencie
- * - get() - Konwersja jQuery obiektu na tablicę
- * - val() - Pobieranie wartości z input/textarea
- * - closest() - Szukanie elementu rodzica
- * - show(), hide() - Pokazywanie/ukrywanie elementów
- * - sortable() - jQuery UI metoda do drag & drop
- */
+// ================================================================
+// NOTATKA EDUKACYJNA: RÓŻNICE MIĘDZY METODAMI jQuery (W3Schools)
+// ================================================================
+
+/*
+
+1. APPEND() VS PREPEND() - gdzie dodać element?
+   ============================================
+   
+   append()   → dodaje element na KONIEC listy (ostatnie dziecko)
+   prepend()  → dodaje element na POCZĄTEK listy (pierwsze dziecko)
+   
+   Przykład:
+   <ul id="list">
+       <!-- prepend() dodaje tutaj -->
+       <li>Element 1</li>
+       <li>Element 2</li>
+       <!-- append() dodaje tutaj -->
+   </ul>
+   
+   Kod:
+   $("#list").prepend("<li>Nowy na początek</li>");
+   $("#list").append("<li>Nowy na koniec</li>");
+
+
+2. REMOVE() VS EMPTY() - usuwanie elementów
+   ========================================
+   
+   remove()  → usuwa CAŁY element z DOM (razem z tagami)
+   empty()   → usuwa ZAWARTOŚĆ elementu, ale sam element pozostaje
+   
+   Przykład:
+   HTML: <div id="test"><p>Tekst</p></div>
+   
+   $(#test").remove();  // <div> znika całkowicie
+   // Rezultat: nic
+   
+   $("#test").empty();  // <p> znika, ale <div> zostaje
+   // Rezultat: <div id="test"></div>
+
+
+3. TEXT() VS HTML() - zawartość tekstowa lub HTML
+   ==============================================
+   
+   text()  → otrzymuje/ustawia TYLKO TEKST (tagi HTML ignoruje)
+   html()  → otrzymuje/ustawia tekst z TAGAMI HTML
+   
+   Przykład:
+   
+   $(selector).text("<b>Bold</b>");
+   // Wyświetli: "<b>Bold</b>" jako zwykły tekst
+   
+   $(selector).html("<b>Bold</b>");
+   // Wyświetli: Bold (pogrubione)
+
+
+4. INNE WAŻNE METODY
+   ================
+   
+   addClass()      → dodaje klasę CSS: $("p").addClass("highlight");
+   removeClass()   → usuwa klasę CSS: $("p").removeClass("highlight");
+   toggleClass()   → przełącza klasę: $("p").toggleClass("highlight");
+   
+   val()          → pobiera wartość input: var x = $("#input").val();
+   attr()         → pobiera atrybut: var href = $("a").attr("href");
+   
+   find()         → wyszukuje elementy wewnątrz: $("#list").find("li");
+   each()         → iteruje po elementach: $("li").each(function() {...});
+   
+   show()/hide()  → pokazuje/ukrywa: $("p").show(); $("p").hide();
+   fadeIn()/fadeOut() → animacje: $("p").fadeIn(); $("p").fadeOut();
+
+
+5. SELEKTORY: :even, :odd, :first, :last
+   ==================================
+   
+   $("#shoppingList li:even")   → każdy parzysty element
+   $("#shoppingList li:odd")    → każdy nieparzysty element
+   $("#shoppingList li:first")  → pierwszy element
+   $("#shoppingList li:last")   → ostatni element
+
+
+6. EVENT HANDLING
+   ==============
+   
+   .click()     → kliknięcie
+   .dblclick()  → podwójne kliknięcie
+   .keypress()  → wciśnięcie klawisza
+   .change()    → zmiana wartości
+   .hover()     → najechanie myszą
+   .on()        → uniwersalny nagłośnik
+   
+   Przykład:
+   $("#btn").click(function() {
+       alert("Kliknąłeś!");
+   });
+
+
+STYLE W3SCHOOLS:
+- Prosta, czytelna struktura
+- Komentarze dla każdej metody
+- Podział na sekcje tematyczne
+- alert() do wyświetlania informacji
+- Podstawowe walidacje (if/else)
+- Funkcje anonimowe w .click()
+- Przejrzystość przed zaawansowaniem
+- var zamiast const
+- == zamiast ===
+- Czysty, edukacyjny kod bez zbędnych funkcji
+
+*/
