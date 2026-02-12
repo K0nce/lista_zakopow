@@ -1,0 +1,269 @@
+/* ============================================
+   Lista Zakupów - CSS Styling
+   ============================================ */
+
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+}
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    color: var(--primary-color);
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    font-weight: 600;
+}
+
+/* Lista zakupów */
+#shoppingList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#shoppingList li {
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    position: relative;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+}
+
+#shoppingList li:hover {
+    background: #e9ecef;
+    border-color: var(--primary-color);
+    padding-left: 20px;
+}
+
+#shoppingList li.active {
+    background: var(--info-color);
+    color: white;
+    border-color: var(--info-color);
+    font-weight: 600;
+}
+
+/* Kolory dla co drugiego elementu */
+#shoppingList li.colored-even {
+    background: #fff3cd;
+    border-color: var(--warning-color);
+    color: #856404;
+    font-weight: 500;
+}
+
+/* Edycja inline */
+#shoppingList li.editing {
+    padding: 0;
+    background: white;
+    border-color: var(--success-color);
+}
+
+#shoppingList li.editing input {
+    width: 100%;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: 2px solid var(--success-color);
+}
+
+/* Drag & drop */
+.ui-sortable-helper {
+    opacity: 0.7;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    transform: rotate(2deg);
+}
+
+.ui-sortable-placeholder {
+    background: var(--primary-color);
+    opacity: 0.3;
+    height: 45px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+/* Przyciski */
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Input fields */
+.form-control {
+    border-radius: 6px;
+    padding: 10px 12px;
+    border: 2px solid #e9ecef;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group .btn {
+    border-radius: 0 6px 6px 0;
+}
+
+.input-group .form-control {
+    border-radius: 6px 0 0 6px;
+}
+
+/* Animacje */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.4s ease-in-out;
+}
+
+.pulse-item {
+    animation: pulse 0.6s ease-in-out;
+}
+
+/* Alert i info */
+.alert {
+    border-radius: 10px;
+    border: 2px solid var(--primary-color);
+    background: #f0f7ff;
+    color: var(--primary-color);
+}
+
+.text-muted small {
+    color: #6c757d;
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group .btn {
+        width: 100%;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    .input-group .form-control,
+    .input-group .btn {
+        border-radius: 6px;
+        width: 100%;
+    }
+
+    .input-group .btn {
+        margin-top: 8px;
+    }
+}
+
+/* Paska edycji */
+.edit-input-wrapper {
+    width: 100%;
+}
+
+.edit-input-wrapper input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid var(--success-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.edit-input-wrapper input:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}

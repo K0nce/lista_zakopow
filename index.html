@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Zakupów - jQuery DOM Manipulation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h1 class="mb-4 text-center">📝 Lista Zakupów</h1>
+                
+                <!-- Section 1: Podstawy -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Podstawowe operacje</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input 
+                                type="text" 
+                                id="productInput" 
+                                class="form-control" 
+                                placeholder="Wpisz nazwę produktu"
+                                autocomplete="off"
+                            >
+                            <button class="btn btn-success" id="addProductBtn">Dodaj produkt</button>
+                        </div>
+                        
+                        <div class="button-group mb-3">
+                            <button class="btn btn-danger" id="removeLastBtn">Usuń ostatni produkt</button>
+                            <button class="btn btn-warning" id="clearListBtn">Wyczyść listę</button>
+                            <button class="btn btn-info" id="restoreListBtn">Przywróć listę</button>
+                        </div>
+
+                        <ul id="shoppingList" class="list-group sortable">
+                            <li class="list-group-item">Mleko</li>
+                            <li class="list-group-item">Chleb</li>
+                            <li class="list-group-item">Masło</li>
+                        </ul>
+                        
+                        <p class="mt-2 text-muted small">
+                            <strong>💡 Wskazówka:</strong> Kliknij na element, aby go edytować. Wciśnij Enter, aby zatwierdzić.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 2: Manipulacja treścią -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Manipulacja treścią i strukturą</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input 
+                                type="text" 
+                                id="productInputPrepend" 
+                                class="form-control" 
+                                placeholder="Wpisz produkt"
+                                autocomplete="off"
+                            >
+                            <button class="btn btn-outline-success" id="addBeginningBtn">Dodaj na początku</button>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <input 
+                                type="text" 
+                                id="productInputAppend" 
+                                class="form-control" 
+                                placeholder="Wpisz produkt"
+                                autocomplete="off"
+                            >
+                            <button class="btn btn-outline-success" id="addEndBtn">Dodaj na końcu</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Style i highlight -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Atrybuty i klasy CSS</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="button-group mb-3">
+                            <button class="btn btn-outline-warning" id="colorEverySecondBtn">
+                                Pokoloruj co drugi element
+                            </button>
+                            <button class="btn btn-outline-warning" id="resetColorsBtn">
+                                Resetuj kolory
+                            </button>
+                        </div>
+                        <p class="text-muted small">
+                            <strong>💡 Wskazówka:</strong> Kliknij na element listy, aby go wyróżnić (active).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Section 4: Zaawansowane -->
+                <div class="card mb-4">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">Zaawansowane operacje</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input 
+                                type="text" 
+                                id="filterInput" 
+                                class="form-control" 
+                                placeholder="Filtruj listę..."
+                                autocomplete="off"
+                            >
+                            <button class="btn btn-outline-danger" id="resetFilterBtn">Pokaż wszystko</button>
+                        </div>
+
+                        <div class="button-group mb-3">
+                            <button class="btn btn-outline-danger" id="sortAlphaBtn">
+                                Sortuj alfabetycznie (A-Z)
+                            </button>
+                            <button class="btn btn-outline-danger" id="sortReverseBtn">
+                                Sortuj odwrotnie (Z-A)
+                            </button>
+                        </div>
+                        
+                        <p class="text-muted small mb-0">
+                            <strong>💡 Wskazówka:</strong> Elementy można przeciągać na liście (drag & drop).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="alert alert-light border">
+                    <h6 class="mb-2">ℹ️ Informacje o aplikacji:</h6>
+                    <small>
+                        <p><strong>Liczba elementów:</strong> <span id="itemCount">3</span></p>
+                        <p class="mb-0"><strong>jQuery metody:</strong> append(), prepend(), remove(), empty(), text(), html(), addClass(), removeClass(), toggleClass(), find(), filter(), each(), sortable()...</p>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
