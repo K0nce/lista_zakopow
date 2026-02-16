@@ -13,7 +13,8 @@ $(document).ready(function() {
             alert("Proszę wpisać nazwę produktu!");
             return;
         }
-        $("#shoppingList").append("<li class='list-group-item'>" + productName + "</li>");
+        var newItem = $("<li class='list-group-item fade-in'>" + productName + "</li>");
+        $("#shoppingList").append(newItem);
         $("#productInput").val("");
         updateCount();
     });
@@ -95,7 +96,8 @@ $(document).ready(function() {
             alert("Proszę wpisać nazwę produktu!");
             return;
         }
-        $("#shoppingList").prepend("<li class='list-group-item'>" + productName + "</li>");
+        var newItem = $("<li class='list-group-item fade-in'>" + productName + "</li>");
+        $("#shoppingList").prepend(newItem);
         
         $("#productInputPrepend").val("");
         updateCount();
@@ -120,7 +122,8 @@ $(document).ready(function() {
             alert("Proszę wpisać nazwę produktu!");
             return;
         }
-        $("#shoppingList").append("<li class='list-group-item'>" + productName + "</li>");
+        var newItem = $("<li class='list-group-item fade-in'>" + productName + "</li>");
+        $("#shoppingList").append(newItem);
         
         $("#productInputAppend").val("");
         updateCount();
