@@ -141,8 +141,8 @@ $(document).ready(function() {
     // - :even selector - co drugi element
     // ============================================================
     
-    $("#colorizeBtn").click(function() {
-        $("#shoppingList li:even").addClass("colored-even");
+    $("#colorEverySecondBtn").click(function() {
+        $("#shoppingList li:nth-child(2n)").addClass("colored-even");
         
         alert("Pokolorowano co drugi element!");
     });
