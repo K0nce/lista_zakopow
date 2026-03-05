@@ -28,6 +28,7 @@ $(document).ready(function() {
     // SEKCJA 2: USUWANIE ELEMENTÓW
     // - Usuwanie ostatniego produktu (remove, :last selector)
     // - Animacja fadeOut
+    
     // ============================================================
     
     $("#removeLastBtn").click(function() {
@@ -208,8 +209,12 @@ $(document).ready(function() {
         var newText = inputElement.val();
         var listItem = inputElement.closest("li");
         
-        if (newText == "") {
-            newText = "(puste)";
+        if ($.trim(newText) == "") {
+            listItem.fadeOut(200, function() {
+                $(this).remove();
+                updateCount();
+            });
+            return;
         }
         listItem.text(newText);
         listItem.removeClass("editing");
